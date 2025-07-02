@@ -1,0 +1,9 @@
+langchain
+langgraph
+langchain_core
+langchain_openai
+langchain_community
+faiss-cpu
+streamlit
+tavily_python
+azure.identity
