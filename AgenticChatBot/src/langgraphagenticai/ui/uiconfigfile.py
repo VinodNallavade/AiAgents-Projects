@@ -9,15 +9,13 @@ class Config:
 
 
     def get_llm_options(self):
-        print(self.config["DEFAULT"].get("LLM_Options"))
-        return self.config["DEFAULT"].get("LLM_Options").split(",")    
+        return "Azure".split(",")    
     
     def get_use_cases(self):
-        return self.config["DEFAULT"].get("Use_Cases").split(",")  
+        return "Basic Chatbot,Chatbot with Tool,Ai News,Blog Generator".split(",")  
     
     def get_llm_models(self):
-        return self.config["DEFAULT"].get("LLM_Models").split(",")  
+        return "gpt-4o-mini,gpt-35-turbo,gpt-35-turbo-instruct".split(",")  
     
     def get_page_title(self):
-        print(self.config["DEFAULT"])
-        return self.config["DEFAULT"].get("PAGE_TITLE")
+        return "LangGraph: Build stateful Agentic AI LangGraph"
