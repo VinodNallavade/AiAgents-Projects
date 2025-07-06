@@ -9,7 +9,7 @@ class Config:
 
 
     def get_llm_options(self):
-        return "Azure".split(",")    
+        return "Azure"   
     
     def get_use_cases(self):
         return "Basic Chatbot,Chatbot with Tool,Ai News,Blog Generator".split(",")  
