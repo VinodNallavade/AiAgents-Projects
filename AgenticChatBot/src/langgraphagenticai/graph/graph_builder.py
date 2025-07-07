@@ -3,11 +3,13 @@ from src.langgraphagenticai.state.aistate import AIState
 from src.langgraphagenticai.nodes.chatbot_node import chatbot_node
 
 
+
 class GraphBuilder:
 
-    def __init__(self,model):
+    def __init__(self,model,memory):
         self.llm = model
         self.graph =  StateGraph(AIState)
+        self.memory= memory
 
     def get_basic_chatbot(self):
         self.basic_chatbot = chatbot_node(self.llm)    
@@ -15,7 +17,7 @@ class GraphBuilder:
         self.graph.add_node("chatbot",self.basic_chatbot.process)
         self.graph.add_edge(START,"chatbot")
         self.graph.add_edge("chatbot",END)
-        return self.graph.compile()
+        return self.graph.compile(checkpointer=self.memory)
     
     def setup_graph(self, usecase): 
         if usecase =="Basic Chatbot" :

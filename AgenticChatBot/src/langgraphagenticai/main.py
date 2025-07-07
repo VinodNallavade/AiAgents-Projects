@@ -5,6 +5,8 @@ from langchain_openai import AzureChatOpenAI
 from src.langgraphagenticai.graph.graph_builder import GraphBuilder
 from src.langgraphagenticai.llms.azurellm import AzureLLM
 from src.langgraphagenticai.ui.streamlit_ui.display_result import DisplayStreamLitMessages
+import uuid
+from langgraph.checkpoint.memory import InMemorySaver
 
 token_provider= get_bearer_token_provider(DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default")
 model= AzureChatOpenAI(
@@ -14,11 +16,20 @@ model= AzureChatOpenAI(
     azure_deployment= "gpt-4o-mini"
 )
 
+
+
 def  load_app():
     """
         This will load strealit app
     
     """
+    if "user-session" not in st.session_state :              
+              st.session_state["memory"] = InMemorySaver()
+              st.session_state["user-session"]= str(uuid.uuid4())
+              print(st.session_state["user-session"])
+
+    thread_id = st.session_state["user-session"]
+    memory = st.session_state["memory"]
     # Load UI
     ui = LoadStreamlitUI()    
     user_control_inputs = ui.sidebar_components()
@@ -43,12 +54,12 @@ def  load_app():
             if not usecase:
                 st.error("Error : No Usecase selected")
             ## Graph Builder
-            graph_builder = GraphBuilder(azure_llm.get_llm_model())
+            graph_builder = GraphBuilder(azure_llm.get_llm_model(),memory=memory)
             graph=graph_builder.setup_graph(usecase)
 
             ## Display results
             print(user_message)
-            display_module= DisplayStreamLitMessages(graph=graph,userinput=user_message)
+            display_module= DisplayStreamLitMessages(graph=graph,userinput=user_message,thread_id=thread_id)
             display_module.display_on_ui()
 
 
