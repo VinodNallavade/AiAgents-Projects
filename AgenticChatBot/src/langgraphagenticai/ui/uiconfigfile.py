@@ -18,4 +18,4 @@ class Config:
         return "gpt-4o-mini,gpt-35-turbo,gpt-35-turbo-instruct".split(",")  
     
     def get_page_title(self):
-        return "🧙🏻‍♂️ LangGraph: Basic ChatBot"
+        return "LangGraph: Basic ChatBot"
