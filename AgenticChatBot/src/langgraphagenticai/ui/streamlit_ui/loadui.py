@@ -10,7 +10,7 @@ class LoadStreamlitUI:
         self.user_controls= {}
 
     def sidebar_components(self):
-        st.header("🧙🏻‍♂️" + self.config.get_page_title())
+        st.header("🧙🏻‍♂️ Az-Agent" + self.config.get_page_title())
         with st.sidebar:            
             self.user_controls["llmoptions"]=st.selectbox("LLM Options",self.config.get_llm_options())
             self.user_controls["models"]=st.selectbox("Models",self.config.get_llm_models())
