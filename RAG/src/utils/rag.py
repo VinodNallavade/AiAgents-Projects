@@ -6,9 +6,12 @@ import tempfile
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_core.vectorstores import VectorStore
+from langchain_community.vectorstores import FAISS
 from typing import List, Any, Optional
 import logging
-
+from langchain_community.docstore.in_memory import InMemoryDocstore
+from uuid import uuid4
+import faiss
 
 logging.basicConfig(
     level=logging.INFO,
@@ -101,11 +104,17 @@ class RAG:
         Store text chunks into a Chroma vector store.
         """
         try:
-            vector_store = Chroma.from_documents(
-                documents=chunks,
-                embedding=self.embedding_model,
-                persist_directory=self.create_chroma_persist_directory(),
+            index = faiss.IndexFlatL2(len(self.embedding_model.embed_query("hello world")))
+
+            vector_store = FAISS(
+                embedding_function=self.embedding_model,
+                index=index,
+                docstore=InMemoryDocstore(),
+                index_to_docstore_id={},
             )
+            uuids = [str(uuid4()) for _ in range(len(chunks))]
+
+            vector_store.add_documents(documents=chunks, ids=uuids)
             logger.info("Chunks successfully stored in Chroma vector store.")
             return vector_store
         except Exception as e:
