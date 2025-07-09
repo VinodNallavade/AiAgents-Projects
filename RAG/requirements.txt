@@ -8,3 +8,5 @@ langchain-chroma
 pypdf
 
 streamlit
+
+protobuf~=3.19.0
