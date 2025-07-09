@@ -10,3 +10,4 @@ pypdf
 streamlit
 
 protobuf==3.19.6
+pysqlite3-binary
