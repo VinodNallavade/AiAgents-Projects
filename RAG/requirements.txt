@@ -3,7 +3,6 @@ langchain-core
 langchain-openai
 langchain-community
 
-langchain-chroma
 
 pypdf
 

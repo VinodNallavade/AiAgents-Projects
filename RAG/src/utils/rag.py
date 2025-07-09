@@ -4,7 +4,7 @@ from langchain_community.document_loaders import PyPDFLoader
 import streamlit as st
 import tempfile
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_chroma import Chroma
+
 from langchain_core.vectorstores import VectorStore
 from langchain_community.vectorstores import FAISS
 from typing import List, Any, Optional
@@ -86,22 +86,22 @@ class RAG:
             st.error("Failed to split documents into chunks.")
             return []
 
-    def create_chroma_persist_directory(self) -> str:
+    def create_FAISS_persist_directory(self) -> str:
         """
-        Create or get a directory for storing the Chroma vector database.
+        Create or get a directory for storing the FAISS vector database.
         """
         try:
             persist_directory = "db"
             st.session_state.persist_directory = persist_directory
-            logger.info(f"Chroma persist directory set to: {persist_directory}")
+            logger.info(f"FAISS persist directory set to: {persist_directory}")
             return persist_directory
         except Exception as e:
-            logger.exception("Error setting Chroma persist directory.")
+            logger.exception("Error setting FAISS persist directory.")
             raise
 
-    def store_to_vectordb(self, chunks: List[Document]) -> Optional[Chroma]:
+    def store_to_vectordb(self, chunks: List[Document]) -> Optional[FAISS]:
         """
-        Store text chunks into a Chroma vector store.
+        Store text chunks into a FAISS vector store.
         """
         try:
             index = faiss.IndexFlatL2(len(self.embedding_model.embed_query("hello world")))
@@ -115,10 +115,10 @@ class RAG:
             uuids = [str(uuid4()) for _ in range(len(chunks))]
 
             vector_store.add_documents(documents=chunks, ids=uuids)
-            logger.info("Chunks successfully stored in Chroma vector store.")
+            logger.info("Chunks successfully stored in FAISS vector store.")
             return vector_store
         except Exception as e:
-            logger.exception("Failed to store chunks in Chroma.")
+            logger.exception("Failed to store chunks in FAISS.")
             st.error("Failed to store data in vector database.")
             return None
 
