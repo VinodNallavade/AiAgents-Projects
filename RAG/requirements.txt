@@ -1,0 +1,10 @@
+azure.identity
+langchain-core
+langchain-openai
+langchain-community
+
+langchain-chroma
+
+pypdf
+
+streamlit
