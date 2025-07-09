@@ -9,6 +9,3 @@ pypdf
 
 streamlit
 
-protobuf~=3.19.0
-standard-imghdr
-pysqlite3
