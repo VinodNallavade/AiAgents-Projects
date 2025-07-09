@@ -12,6 +12,8 @@ import logging
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from uuid import uuid4
 import faiss
+from pinecone import ServerlessSpec,Pinecone
+from langchain_pinecone import PineconeVectorStore
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,12 +24,13 @@ logger = logging.getLogger(__name__)
 
 
 class RAG:
-    def __init__(self,chat_model_name,api_key,embedding_model):
+    def __init__(self,chat_model_name,api_key,embedding_model,pinecode_key):
         """Initialize LLM and embedding model."""
         try:
             model_cls = models(api_key=api_key,chat_model_name=chat_model_name,embedding_model=embedding_model)
             self.llm = model_cls.get_llm_model()
             self.embedding_model = model_cls.get_embedding_model()
+            self.pinecode_key = pinecode_key
             logger.info("LLM and embedding models loaded successfully.")
         except Exception as e:
             logger.exception("Failed to initialize models.")
@@ -104,14 +107,27 @@ class RAG:
         Store text chunks into a FAISS vector store.
         """
         try:
-            index = faiss.IndexFlatL2(len(self.embedding_model.embed_query("hello world")))
+            index_name = str(uuid4())  # change if desired
+            pc = Pinecone(api_key=self.pinecode_key)
+            if not pc.has_index(index_name):
+                pc.create_index(
+                    name=index_name,
+                    dimension=1536,
+                    metric="cosine",
+                    spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+                )
 
-            vector_store = FAISS(
-                embedding_function=self.embedding_model,
-                index=index,
-                docstore=InMemoryDocstore(),
-                index_to_docstore_id={},
-            )
+            index = pc.Index(index_name)
+            vector_store = PineconeVectorStore(index=index, embedding=self.embedding_model)
+            ####### This for FAISS
+            ##index = faiss.IndexFlatL2(len(self.embedding_model.embed_query("hello world")))
+
+            ##vector_store = FAISS(
+            ##    embedding_function=self.embedding_model,
+            ##    index=index,
+            ##    docstore=InMemoryDocstore(),
+            ##    index_to_docstore_id={},
+            ##)
             uuids = [str(uuid4()) for _ in range(len(chunks))]
 
             vector_store.add_documents(documents=chunks, ids=uuids)

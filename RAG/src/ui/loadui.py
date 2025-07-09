@@ -22,13 +22,16 @@ class LoadStreamlitUI:
             self.user_controls["SelectedLLM"] = st.selectbox("Select LLM Provider",["Azure"])
             self.user_controls["ChatModel"] = st.selectbox("Select Model",["gpt-4o-mini","gpt-35-turbo","gpt-35-turbo-instruct"])
             self.user_controls["EmbeddingModel"] = st.selectbox("Select Model",["text-embedding-ada-002"])      
-            self.user_controls["LLMKey"] =  st.text_input("Please provide Key", type= "password")    
+            self.user_controls["LLMKey"] =  st.text_input("Please provide Key", type= "password")  
             if not self.user_controls["LLMKey"]:
+                st.warning("Please provide key")  
+            self.user_controls["PineCodeKey"] = st.text_input("Please provide Pinecode key", type= "password")            
+            if not self.user_controls["PineCodeKey"]:
                 st.warning("Please provide key")
         uploaded_files = st.file_uploader(label="Please upload file of max 200Mb",accept_multiple_files= True,type=["pdf"])        
         if st.button("Upload and Process"):
             if uploaded_files is not None:
-                rag = RAG(self.user_controls["ChatModel"],self.user_controls["LLMKey"],self.user_controls["EmbeddingModel"])
+                rag = RAG(self.user_controls["ChatModel"],self.user_controls["LLMKey"],self.user_controls["EmbeddingModel"],self.user_controls["PineCodeKey"])
                 await rag.run_rag_pipeline(files=uploaded_files)
             else:
                 st.error("Please upload files")

@@ -17,7 +17,8 @@ class models:
              )
      except Exception as e:
          print(e)
-         raise e
+         raise e 
+
      
 
     def get_embedding_model(self):
