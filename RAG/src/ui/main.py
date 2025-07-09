@@ -2,7 +2,7 @@ import streamlit as st
 from azure.identity import DefaultAzureCredential,get_bearer_token_provider
 from langchain_openai import AzureChatOpenAI
 import uuid
-from ui.loadui import LoadStreamlitUI
+from src.ui.loadui import LoadStreamlitUI
 
 
 

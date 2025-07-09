@@ -1,4 +1,4 @@
-from utils.model import models
+from src.utils.model import models
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
 import streamlit as st
@@ -147,28 +147,28 @@ class RAG:
             if not documents:
                 st.warning("No documents found.")
                 return None
-    
+
             with st.spinner("✂️ Splitting documents into chunks..."):
                 chunks = self.chunk_documents(documents, chunk_size, chunk_overlap)
             if not chunks:
                 st.warning("No chunks created.")
                 return None
-    
+
             with st.spinner("🧠 Storing chunks in vector database..."):
                 vector_store = self.store_to_vectordb(chunks)
             if not vector_store:
                 st.error("Failed to store documents in vector DB.")
                 return None
-    
+
             with st.spinner("🔍 Preparing retriever..."):
                 retriever = self.get_retriever(vector_store, k, lambda_mult)
             if not retriever:
                 st.error("Failed to initialize retriever.")
                 return None
-    
+
             st.success("✅ RAG pipeline completed successfully.")
             return retriever
-    
+
         except Exception as e:
             logger.exception("Error running full RAG pipeline.")
             st.error("❌ An error occurred while running the RAG pipeline.")

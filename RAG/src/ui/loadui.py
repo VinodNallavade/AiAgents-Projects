@@ -1,6 +1,6 @@
 import streamlit as st
-from ui.uiconfigfile import Config
-from utils.rag import RAG
+from src.ui.uiconfigfile import Config
+from src.utils.rag import RAG
 
 
 class LoadStreamlitUI:
